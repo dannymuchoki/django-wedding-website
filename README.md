@@ -38,7 +38,7 @@ It is completely customizable to your needs and the content is laid out in stand
 - Configurable content sections for every aspect of your site that you want
 - A set of different styles you can use for different sections
 
-![Hero Section of Wedding Website](https://raw.githubusercontent.com/dannymuchoki/django-wedding-website/local/screenshots/hero-page.png)
+![Hero Section of Wedding Website](https://raw.githubusercontent.com/dannymuchoki/django-wedding-website/master/screenshots/hero-page.png)
 
 ### Guest management
 
@@ -102,7 +102,7 @@ It's a great way of tracking your big picture numbers in terms of how many guest
 
 Just access `/dashboard/` from an account with admin access. Your other guests won't be able to see it.
 
-![Wedding Dashboard](https://raw.githubusercontent.com/dannymuchoki/django-wedding-website/local/screenshots/wedding-dashboard.png)
+![Wedding Dashboard](https://raw.githubusercontent.com/dannymuchoki/django-wedding-website/master/screenshots/wedding-dashboard.png)
 
 
 ### Other details
