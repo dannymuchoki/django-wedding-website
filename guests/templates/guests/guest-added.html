@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_head %}
+{% include 'guests/partials/navigation.html' %} 
+    <link href="{% static 'bigday/css/rsvp-confirmation.css' %}" rel="stylesheet" xmlns="http://www.w3.org/1999/html">
+{% endblock %}
+{% block page_content %}
+    <div class="layer"></div>
+    <div class="container" id="main">
+        <h2>
+            {{response}}
+        </h2>
+        
+    </div>
+{% endblock %}

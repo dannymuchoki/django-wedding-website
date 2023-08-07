@@ -10,6 +10,8 @@
     {% for party in party_list %}
         <tr>
             <td><a href="{% url 'admin:guests_party_change' party.pk %}" >{{ party.name }}</a></td>
+            <td> <a href="{% url 'invitation' invite_id=party.invitation_id%}" >View Invite</td>
+            <td><a href="{% url 'invitation-email-test' invite_id=party.invitation_id %}">Send Invite </a></td>
             <td>{{ party.category }}</td>
             <td>{{ party.guest_emails|join:"<br>" }}</td>
         </tr>

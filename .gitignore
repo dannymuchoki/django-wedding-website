@@ -3,11 +3,20 @@
 .idea*
 *.pyc
 localsettings.py
+local_settings.py
 *.sqlite3
-static_root
 _working/
 data/
-static/
 guests/static/save-the-date/images/archive/
+guests/tests/data/guestlist.csv
+bigday_secrets.py
+bigday/.env
 .DS_Store
-.venv/
+media/guest-list
+media/guest-list/*
+AdibePhotography-20_Original.jpg
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

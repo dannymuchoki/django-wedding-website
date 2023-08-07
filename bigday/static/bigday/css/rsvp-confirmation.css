@@ -2,7 +2,8 @@ body {
     background: linear-gradient(
       rgba(255, 255, 255, 0.6),
       rgba(255, 255, 255, 0.6)
-    ), url('../images/lions-head-medium.jpg') no-repeat center center fixed;
+    ), url('../images/') no-repeat center center fixed;
+    color:#000;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;

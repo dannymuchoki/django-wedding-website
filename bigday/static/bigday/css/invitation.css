@@ -26,17 +26,15 @@
 }
 
 #invitation-details, #rsvp-form {
-    margin-top: 2em;
-    padding: 1em;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
-    border: .2em solid grey;
+
 }
 
 
 body {
-    background: url('../images/invite-background.jpg') no-repeat center center fixed;
+    background: url() no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;

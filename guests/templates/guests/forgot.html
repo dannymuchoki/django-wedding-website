@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_head %}
+    <link href="{% static 'bigday/css/rsvp-confirmation.css' %}" rel="stylesheet" xmlns="http://www.w3.org/1999/html">
+{% endblock %}
+{% block page_content %}
+    <div class="container d-flex align-items-center justify-content-center" id="main">
+        <h1>
+            Did you lose or forget your invitation link?
+        </h1>
+        <p>
+            Enter your email address here.
+        </p>
+        <form action="{% url 'rsvp-forgot' %} " method="post">
+            <div>
+                {% csrf_token %}
+                <p>
+                    <input type ="email" name="email">
+                </p>
+                
+                    <input type="text" name="message" id="message" style="display:none;">
+                
+                <p>
+                    <input type="submit" class="btn btn-primary" value="Submit" />
+                </p>
+            
+            </div>
+
+        </form>
+        {{response}}
+    </div>
+{% endblock %}

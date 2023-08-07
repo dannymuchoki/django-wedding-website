@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+{% block page_content %}
+{% include 'guests/partials/navigation.html' %} 
+    <div class="container">
+        <div class="row">
+            <h2>Invitation Overview</h2>
+            <table class="table table-striped">
+                <tr>
+                    <td>Guests Attending / Possible</td>
+                    <td>{{ guest_count }} / {{ possible_guests_count }}</td>
+                </tr>
+                <tr>
+                    <td>Pending Invitations</td>
+                    <td>{{ pending_invites_count }} ({{ pending_guests_count }} guests)</td>
+                </tr>
+                <tr>
+                    <td>Unopened Invitations</td>
+                    <td>{{ unopened_invite_count }}<span class="text-muted"> / {{ total_invites_count }}</span></td>
+                </tr>
+                <tr>
+                    <td>Not Coming</td>
+                    <td>{{ not_attending_guests_count }}</td>
+                </tr>
+                <tr>
+                    <td>
+                        Send all pending invitations
+                    </td>
+                    <td>
+                        <a href="{% url 'send-all-invitations' %}"> <button type="submit" class='btn btn-primary' name="button">Send all pending invites</button></a>
+                    </td>
+                    
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <h2>Meal choices</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        {% for meal in meal_breakdown %}
+                        <th>{{ meal.meal }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        {% for meal in meal_breakdown %}
+                        <td>{{ meal.count }}</td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <h2>Attending</h2>
+            <table class ="table">
+                
+                <thead>
+                    <th>
+                       Guest
+                    </th>
+                    <th>
+                        Email
+                    </th>
+                    <th>
+                        Meal
+                    </th>
+                    <th>
+                        Invitation Link
+                    </th>
+                    <th>
+                        Resend Invitation
+                    </th>
+                    <th>
+                        Caboose Farm Arrival
+                    </th>
+                </thead>
+                {% for guest in attending_guests %}
+                <tr>
+                    <td>
+                       {{guest.first_name}} {{guest.last_name}}
+                       
+                    </td>
+                    <td>
+                        {{guest.email}}
+                    </td>
+                    <td>
+                        {{guest.meal}}
+                    </td>
+                    {% if guest.email is blank %}
+                    <td>
+                        <!--  Blank on purose -->
+                    </td>
+                    
+                    <td>
+                        <!--  Blank on purose -->
+                    </td>
+                    
+                    <td>    
+                         <!--  Blank on purose -->
+                    </td>
+                    
+                    {% else %}
+                    <td>
+                        <a href="{% url 'invitation' invite_id=guest.party_name.invitation_id %}">View invitation</a> 
+                    </td>
+                    <td>
+                        <a href="{% url 'invitation-email-test' invite_id=guest.party_name.invitation_id %}">Re-send Invite </a> 
+                    </td>
+                    <td>
+                        {% if guest.caboose_farm  %}
+                           {% if guest.is_too_early %}
+                                Check with {{guest.first_name}}. 
+                            
+                            {% elif guest.is_too_late %}
+                                {{guest.first_name}} time travels
+                            {% else %}
+                                {{guest.arrival_date}} 
+                            {% endif %}
+                        {% else %} 
+                            Not Applicable.
+                        {% endif %}
+                    </td>
+                    
+                {% endif %}
+                
+                </tr>
+                {% empty %}
+                <thead>
+                    <td>
+                        No one is coming. Sadface. 
+                    </td>
+                    <td>
+                        <!--intentionally blank-->
+                    </td>
+                    <td>
+                        <!--intentionally blank-->
+                    </td>
+                    <td>
+                        <!--intentionally blank-->
+                    </td>
+                    <td>
+                        <!--intentionally blank-->
+                    </td>
+                    <td>
+                        <!--intentionally blank-->
+                    </td>
+                    
+
+                </thead>
+                 {% endfor %}
+                 <thead>
+
+                     <td>
+                        <!--intentionally blank-->
+                     </td>
+                     <td>
+                        <!--intentionally blank-->
+                     </td>
+                     <td>
+                        <!--intentionally blank-->
+                     </td>
+                     <td>
+                        <!--intentionally blank-->
+                     </td>
+                     <td>
+                        <!--intentionally blank-->
+                     </td>
+                     <td>
+                        <!--  Blank on purose -->
+                   </td>
+
+                 </thead>
+            </table>
+
+           
+        </div>
+        <div class="row">
+            <h2>Not Attending</h2>
+            <table class ="table">
+                
+                <thead>
+                    <th>
+                       Name
+                    </th>
+                    <th>
+                        Invitation
+                    </th>
+                </thead>
+                <tr>
+                </tr>
+                {% for guest in not_attending %}
+                <tr>
+                    <td>
+                       <p>
+                        {{guest.first_name}} {{guest.last_name}}
+                       </p>
+                       
+                       
+                    </td>
+                    <td>
+                        <p>
+                        
+                            <a href="{% url 'invitation' invite_id=guest.party_name.invitation_id %}">View invitation</a> 
+                            
+                        </p>
+                        
+                    </td>
+                </tr>
+                    {% empty %}
+                    <thead>
+                        <td>
+                           Everyone is coming! Excellent!
+                        </td>
+                        <td>
+
+                        </td>
+                    </thead>
+                 {% endfor %}
+            </table>
+           
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <h1>Unopened Invitations</h1>
+                {% with party_list=parties_with_unopen_invites %}
+                    {% include "guests/partials/party_list.html" %}
+                {% endwith %}
+            </div>
+            <div class="col-lg-6">
+                <h1>Open Unresponded Invitations</h1>
+                {% with parties_with_open_unresponded_invites as party_list %}
+                    {% include "guests/partials/party_list.html" %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

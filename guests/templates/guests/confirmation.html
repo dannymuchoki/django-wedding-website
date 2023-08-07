@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_head %}
+    <link href="{% static 'bigday/css/invitation.css' %}" rel="stylesheet" xmlns="http://www.w3.org/1999/html">
+{% endblock %}
+{% block page_content %}
+    <div class="container">
+        <section class="col-md-12">
+            <h2 class="section-heading text-center">Confirmation</h2>
+            <hr class="primary">
+            <h3 class="text-center">
+             <a href="{% url 'invitation' invite_id=party.invitation_id%}"><button type="submit" class='btn btn-primary' name="button">Change RSVP</button></a>
+            </h3>
+        </section>
+        
+
+        <section class="col-md-12">
+            <h3 id="rsvp-header"></h3>
+            <dl class="dl-horizontal lead"></dl>
+      
+            {% for guest in party.ordered_guests.all %}
+
+            {% if guest.is_attending %}
+
+                <dl class="dl-horizontal lead">
+                    <dt>Guest</dt>
+                    <dd>{{guest.name}}</dd>
+                    <dt>Meal</dt>
+                    <dd>{{guest.meal}}</dd>                                       
+                </dl>
+            {% endif %}
+            {% endfor %}
+
+            {% if caboose_farm %}
+            <h2 class="section-heading text-center">{{caboose_farm_name}} Details</h2>
+            <hr class="primary">
+            <dl class="dl-horizontal lead">
+                
+                    {% for guest in party.ordered_guests.all %}
+                        {% if guest.is_attending %}
+                        <dt>{{guest.name}}</dt>
+                        <dd> will arrive on {{guest.arrival_date}}</dd> 
+                        {% endif %}
+                    {% endfor %}
+
+                <dt><a href="{{caboose_farm_map}}">Address</a></dt>
+                <dd><a href="{{caboose_farm_map}}">{{caboose_farm_address}}</a></dd>
+                
+            </dl>
+            {% endif %}  
+
+
+            <h2 class="section-heading text-center">Reminders</h2>
+            <hr class="primary">
+            <dl class="dl-horizontal lead">
+                <dd>
+                    <li>Make sure you are up to date on your COVID vaccinations.</li>
+                    <li>Try to get a COVID test 24 hours before the event.</li>
+                    <li>Bring identification (the guest list is strictly enforced).</li>
+                    <li>Do not drink and drive!</li>
+                </dd>
+            </dl>
+            
+
+            <h2 class="section-heading text-center">Details</h2>
+            <hr class="primary">
+            <dl class="dl-horizontal lead">
+                <dt>What</dt>
+                <dd>{{couple_name}}'s wedding ceremony</dd>
+                <dt>When</dt>
+                <dd>{{wedding_date}} - {{ceremony_start}}</dd>
+                <dt>Where</dt>
+                <dd>
+                    <address>
+                       {{wedding_location}}<br>
+                        <a href="{{map_url}}">{{ceremony_address}}</a><br>
+                    </address>
+                </dd>
+                <dt>Attire</dt>
+                <dd>
+                Semi-formal, comfortable, and creative (i.e. whatever you want). It's summer in the mid-Atlantic. Don't be a hero.<br> 
+                </dd>
+                <dt>Transportation</dt>
+                <dd>From <a href="{{caboose_farm_map}}">{{caboose_farm_name}}</a> to <a href="{{map_url}}">{{wedding_location}}</a>:
+                    <ul>
+                        <li>Boarding at 2:40 PM </li>
+                        <li>Departing at 2:40 PM</li>
+
+                    </ul>
+                </dd>
+                <dd>From <a href="{{map_url}}">{{wedding_location}}</a> to <a href="{{caboose_farm_map}}">{{caboose_farm_name}}</a>:
+                    <ul>
+                        <li>Boarding at 10:00 PM </li>
+                        <li>Departing at 10:15 PM</li>
+
+                    </ul>
+                </dd>
+
+                <dt>Parking</dt>
+                <dd>Parking is available on-site.</dd>
+
+                
+        </section>
+
+
+
+{% endblock %}
+{% block page_js %}
+    <script src="{% static 'validator.js' %}"></script>
+    <script>
+    $(function () {
+        // enable/disable meal choices based on attendance
+        $("input.attending-radio").change(function (e) {
+            var target = $(e.target);
+            if (target.closest('.form-group').data('is-child') === "True") {
+                // don't attempt to update meals for children, who don't have them.
+                return;
+            }
+            var value = target.attr('value');
+            var mealButtonContainer = target.closest('.form-group').next('.form-group');
+            var mealButtons = mealButtonContainer.find('[type=radio]');
+            if (value === 'yes') {
+                mealButtonContainer.removeClass('text-muted');
+                mealButtons.each(function (index, button) {
+                    button.disabled = false;
+                    button.required = true;
+                });
+            } else if (value === "no") {
+                mealButtonContainer.addClass('text-muted');
+                mealButtons.each(function (index, button) {
+                    button.checked = false;
+                    button.disabled = true;
+                    button.required = false;
+                });
+            }
+            // reload validation
+            $(document.forms[0]).validator('destroy');
+            $(document.forms[0]).validator();
+        });
+    });
+    </script>
+{% endblock %}

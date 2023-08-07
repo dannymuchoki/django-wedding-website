@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_head %}
+{% include 'guests/partials/navigation.html' %} 
+    <link href="{% static 'bigday/css/rsvp-confirmation.css' %}" rel="stylesheet" xmlns="http://www.w3.org/1999/html">
+{% endblock %}
+{% block page_content %}
+    <div class="container" id="main">
+        <h1>Guest List</h1>
+        {{response}}
+        <table class="table">
+            <thead>
+                <th>
+                    Party
+                </th>
+                <th>
+                    First Name
+                </th>
+                <th>
+                    Last Name
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    Will attend
+                </th>
+            </thead>
+            {% for guest in guest_list %}
+                {% if guest.is_attending == True %}
+                    <tr>
+                        <td>
+                            {{guest.party_name}}
+                        </td>
+                        <td>
+                            {{guest.first_name}}
+                        </td>
+                        <td>
+                            {{guest.last_name}}
+                        </td>
+                        <td>
+                            {{guest.email}}
+                        </td>
+                        <td>
+                            Yes
+                        </td>
+                    </tr>
+                {% elif guest.is_attending == False %}
+                    <tr>
+                        <td>
+                            {{guest.party_name}}
+                        </td>
+                        <td>
+                            {{guest.first_name}}
+                        </td>
+                        <td>
+                            {{guest.last_name}}
+                        </td>
+                        <td>
+                            {{guest.email}}
+                        </td>
+                        <td>
+                            No
+                        </td>
+                    </tr>
+                    {%else %}
+                    <tr>
+                        <td>
+                            {{guest.party_name}}
+                        </td>
+                        <td>
+                            {{guest.first_name}}
+                        </td>
+                        <td>
+                            {{guest.last_name}}
+                        </td>
+                        <td>
+                            {{guest.email}}
+                        </td>
+                        <td>
+                            TBD
+                        </td>
+                    </tr>
+                {% endif %}
+            {%endfor%}
+            <tr>
+                <td>        
+                    <a href="{% url 'download-csv'%}"> <button type="submit" class='btn btn-primary' name="button">Download Guest List</button></a>
+                
+                </td>
+                <td>
+                    <!-- intentionally blank-->
+                </td>
+                <td>
+                    <!-- intentionally blank-->
+                </td>
+                <td>
+                    <!-- intentionally blank-->
+                </td>
+                <td>
+                    <!-- intentionally blank-->
+                </td>
+            </tr>
+        </table>
+        
+    </div>
+{% endblock %}

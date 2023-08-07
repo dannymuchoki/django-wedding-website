@@ -1,16 +1,14 @@
 # A Django Wedding Website and Invitation + Guest Management System
 
-Live site examples:
+## The Website
 
-- [Standard Wedding Website](http://rowena-and.coryzue.com/)
-- [Random Save The Date Email](http://rowena-and.coryzue.com/save-the-date/) (refresh for more examples)
-- [Sample Personal Invitation Page](http://rowena-and.coryzue.com/invite/b2ad24ec5dbb4694a36ef4ab616264e0/)
+This was originally a project by [Cory Zue](http://www.coryzue.com/contact/) that I forked and used for my own wedding.
+You can find [a longer writeup on this project here](https://www.placecard.me/blog/django-wedding-website/).
 
-There is also [a longer writeup on this project here](https://www.placecard.me/blog/django-wedding-website/).
 
-## What's included?
+## What was included in the original package?
 
-This includes everything we did for our own wedding:
+Cory's original work included:
 
 - A responsive, single-page traditional wedding website
 - A complete guest management application
@@ -18,7 +16,14 @@ This includes everything we did for our own wedding:
 - Email framework for invitations and built in RSVP system
 - Guest dashboard
 
-More details on these below.
+## Danny added a couple of things
+
+- The ability to upload your guest list via the dashboard using a CSV.
+- The ability to downlaod your guest list via the dashboard, also in CSV.
+- Each guest gets a unique numeric code. I used it for security authentication purposes.
+- Template updates for more DRY-ness (you don't have to scour the templates to change the couple's names).
+- Made the secret key more resilient (i.e. hid it in an .env)
+- A view that resends RSVP links to guests who forgot/lost them.
 
 ### The "Standard" Wedding Website
 
@@ -33,12 +38,23 @@ It is completely customizable to your needs and the content is laid out in stand
 - Configurable content sections for every aspect of your site that you want
 - A set of different styles you can use for different sections
 
-![Hero Section of Wedding Website](https://raw.githubusercontent.com/czue/django-wedding-website/master/screenshots/hero-page.png)
+![Hero Section of Wedding Website](https://raw.githubusercontent.com/dannymuchoki/django-wedding-website/local/screenshots/hero-page.png)
 
 ### Guest management
 
-The guest management functionality acts as a central place for you to manage your entire guest list.
-It includes two data models - the `Party` and the `Guest`.
+Originally, you could upload the guest list via the console. My guest list was always fluctuating to I added an option to upload
+guests via CSV in the dashboard view.
+
+The column headers for your CSV should be:
+
+```
+Party, First Name, Last Name, Type, Is Child?, Category, Invite Now?, Email, Caboose Farm?, Arrival Date
+
+```
+
+`Party`, `First Name`, and `Last Name` are the only columns that are strictly mandatory. You can customize how to populate your dashboard via models.py.
+
+The original code included two data models - the `Party` and the `Guest`. I added a third `UploadedGuestList` to manage my uploaded guest list spreadsheets.
 
 #### Party model
 
@@ -52,13 +68,13 @@ The `Guest` model contains all of your individual guests.
 In addition to standard name/email it has fields to represent whether the guest is a child (for kids meals/pricing differences),
 and, after sending invitations, marking whether the guest is attending and what meal they are having.
 
-#### Excel import/export
+#### CSV import/export
 
-The guest list can be imported and exported via excel (csv).
+The guest list can be imported and exported via excel (csv) either in command line or in the dashboard.
 This allows you to build your guest list in Excel and get it into the system in a single step.
 It also lets you export the data to share with others or for whatever else you need.
 
-See the `import_guests` management command for more details and `guests/tests/data` for sample file formats or see the customization section below.
+For the command line option, see the `import_guests` management command for more details and `bigday/guests/tests/data` for sample file formats.
 
 ### Save the Dates
 
@@ -86,97 +102,45 @@ It's a great way of tracking your big picture numbers in terms of how many guest
 
 Just access `/dashboard/` from an account with admin access. Your other guests won't be able to see it.
 
-![Wedding Dashboard](https://raw.githubusercontent.com/czue/django-wedding-website/master/screenshots/wedding-dashboard.png)
+![Wedding Dashboard](https://raw.githubusercontent.com/dannymuchoki/django-wedding-website/local/screenshots/wedding-dashboard.png)
+
 
 ### Other details
 
 You can easily hook up Google analytics by editing the tracking ID in `google-analytics.html`.
 
-
 ## Installation
 
-This is developed for Python 3 and Django 4.1.
+As of writing this in 2023, this was developed for Python 3 and Django 3.12.3 (LTS).
 
-It's recommended that you setup a virtualenv before development.
-
-Then just install requirements, migrate, and runserver to get started:
+Make a [virtual environment](https://docs.python.org/3/library/venv.html)! Then just install requirements, migrate, and runserver to get started:
 
 ```bash
 pip install -r requirements.txt
 python manage.py migrate
-python manage.py createsuperuser
 python manage.py runserver
 ```
 
-If you run into Python errors, try to replace `python` with `python3`.
+## Create a local .env file!
 
-You can now visit your site at `http://localhost:8000/`.
+This version heavily relies on a local .env file referenced in settings.py. 
 
-The dashboard and admin interface are available at `http://localhost:8000/dashboard/` and `http://localhost:8000/admin/`. 
-Use the superuser created in step three of the commands above.
 
 ## Customization
 
 I recommend forking this project and just manually modifying it by hand to replace everything with what you want.
 Searching for the text on a page in the repository is a great way to find where something lives.
 
-Some things are already customizable thanks to the use of variables. 
-Copy `bigday/localsettings.py.template` to `bigday/localsettings.py` and edit the values.
-You definitely need to change the `SECRET_KEY` to a new secure value.
-
-`localsettings.py` is excluded from Git, so you won't accidentally submit your personal data to a public repository.
-
 ### Sending email
 
-This application uses Django's email framework for sending mail. 
-In order to hook it into a real server, you need to switch the variable `MAIL_BACKEND` of the `bigday/settings.py` from `console` to `smtp`.
-You have to enter your email configuration in the `bigday/localsettings.py` (see `Customization`).
+This application uses Django's email framework for sending mail.
+You need to modify the `EMAIL_HOST`, `EMAIL_PORT` and other associated variables in `settings.py` in order
+to hook it into a real server. MAKE SURE TO STORE THESE SETTINGS IN AN ENVIRONMENT VARIABLE!  
 
-This [thread on stack overflow](https://stackoverflow.com/questions/6367014/how-to-send-email-via-django) has a working example for a Gmail configuration.
-
-Save the dates and invitations can be send with the following commands:
-```bash
-python manage.py send_save_the_dates --send --mark-sent
-python send_invitations --send --mark-sent
-```
-
-If you want to know more about the command line options, please use the `-h` option:
-```bash
-python manage.py send_save_the_dates -h
-python send_invitations -h
-```
+This [thread on stack overflow](https://stackoverflow.com/questions/6367014/how-to-send-email-via-django)
+is a good starting place for learning how to connect to a real mail service. I recommend Sendgrid.
 
 ### Email addresses
 
 To customize the email addresses, see the `DEFAULT_WEDDING_FROM_EMAIL` and
-`DEFAULT_WEDDING_REPLY_EMAIL` variables in `bigday/localsettings.py` (See `Customization`).
-You are also able to CC someone on all your outgoing emails using `WEDDING_CC_LIST`
-
-### Import guests
-
-To actually be able to send emails, you need to import your guests first.
-The import method expects a CSV file with the following header:
-
-`party_name,first_name,last_name,party_type,is_child,category,is_invited,email`
-
-A sample line could be:
-
-`Party Name,Phred,McPhredson,formal,n,Groom,y,email@domain.tld`
-
-The import command is:
-
-```bash
-python manage.py import_guests guestList.csv
-```
-
-If you want to add more guests to the list, simply create a new CSV and rerun the command.
-
-### Other customizations
-
-If you want to use this project for your wedding but need help getting started just [get in touch](http://www.coryzue.com/contact/) or make an issue
-for anything you encounter and I'm happy to help.
-
-I haven't built out more complete customization docs yet because I wasn't sure anyone would be interested in this,
-but will add to these instructions whenever I get questions!
-
--Cory
+`DEFAULT_WEDDING_REPLY_EMAIL` variables in `settings.py`.

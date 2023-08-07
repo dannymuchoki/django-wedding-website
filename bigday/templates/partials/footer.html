@@ -1,2 +1,11 @@
-<div id="footer" class="text-center text-muted invisible"><a href="{{ website_url }}">{{ website_url }}</a>
-based off the work of <a href="https://github.com/czue/django-wedding-website" target="_blank">Cory and Ro.</a></div>
+<div id="footer" class="text-center text-muted invisible">
+    <br/>
+    <p>
+        <a href="https://{{ request.get_host }}">{{ request.get_host }}</a>  
+    </p>
+    <p>
+        Built by <a href="https://github.com/dannymuchoki/django-wedding-website" target="_blank">Danny</a>
+        using code from <a href="https://github.com/czue/django-wedding-website" target="_blank">Corey Zue</a> 
+    </p>
+
+</div>
