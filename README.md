@@ -1,10 +1,9 @@
-# A Django Wedding Website and Invitation + Guest Management System
+# A Wedding Website and Invitation + Guest Management System built in Django. 
 
 ## The Website
 
 This was originally a project by [Cory Zue](http://www.coryzue.com/contact/) that I forked and used for my own wedding.
 You can find [a longer writeup on this project here](https://www.placecard.me/blog/django-wedding-website/).
-
 
 ## What was included in the original package?
 
@@ -18,11 +17,11 @@ Cory's original work included:
 
 ## Danny added a couple of things
 
-- The ability to upload your guest list via the dashboard using a CSV.
-- The ability to downlaod your guest list via the dashboard, also in CSV.
-- Each guest gets a unique numeric code. I used it for security authentication purposes.
+- The ability to upload your guest list via the dashboard using a comma delimited file (.csv)
+- The ability to download your guest list via the dashboard, also in .csv.
+- Each guest gets a unique numeric code. I used it for security authentication purposes to keep out gatecrashers.
 - Template updates for more DRY-ness (you don't have to scour the templates to change the couple's names).
-- Made the secret key more resilient (i.e. hid it in an .env)
+- Made the secret key more resilient (i.e. hid it in an `.env` file)
 - A view that resends RSVP links to guests who forgot/lost them.
 
 ### The "Standard" Wedding Website
@@ -40,21 +39,46 @@ It is completely customizable to your needs and the content is laid out in stand
 
 ![Hero Section of Wedding Website](https://raw.githubusercontent.com/dannymuchoki/django-wedding-website/master/screenshots/hero-page.png)
 
-### Guest management
+### Forgot your RSVP?
 
-Originally, you could upload the guest list via the console. My guest list was always fluctuating to I added an option to upload
-guests via CSV in the dashboard view.
+Guests who lose their RSVP can get it resent by visiting `/forgot` and entering their email address. If the email address is on the guest list,
+the system re-sends the guest's invitation. 
 
-The column headers for your CSV should be:
+### Guest dashboard
+
+You can access the dashboard via `/dashboard/` from an account with admin access. Your other guests won't be able to see it.
+
+Originally, you could upload the guest list via the console. My guest list was always fluctuating so I added an option to upload
+guests via a comma delimited file (.csv) in the dashboard view.
+
+#### Adding guests
+![Wedding Dashboard](https://raw.githubusercontent.com/dannymuchoki/django-wedding-website/master/screenshots/wedding-dashboard-1.png)
+
+You can make a `.csv` file pretty easily in Excel or OpenOffice. The column headers for your .csv file should be:
 
 ```
 Party, First Name, Last Name, Type, Is Child?, Category, Invite Now?, Email, Caboose Farm?, Arrival Date
 
 ```
+Look in `guests/tests/data` for sample file formats. 
 
-`Party`, `First Name`, and `Last Name` are the only columns that are strictly mandatory. You can customize how to populate your dashboard via models.py.
+`Party`, `First Name`, and `Last Name` are the only columns that are strictly mandatory. You can customize how to populate your dashboard via `views.py`. I recommend changing the Guest and Party models to suit your data collection needs. 
 
-The original code included two data models - the `Party` and the `Guest`. I added a third `UploadedGuestList` to manage my uploaded guest list spreadsheets.
+
+### Viewing/downloading your guest list
+![Wedding Dashboard](https://raw.githubusercontent.com/dannymuchoki/django-wedding-website/master/screenshots/wedding-dashboard-2.png)
+
+Each guest added will be included in the guest list. You can quickly download a .csv spreadsheet of your guests. 
+
+#### Guest management
+![Wedding Dashboard](https://raw.githubusercontent.com/dannymuchoki/django-wedding-website/master/screenshots/wedding-dashboard-3.png)
+
+After your invitations go out you can use the guest dashboard to see how many people have RSVP'd, everyone who still
+has to respond, people who haven't selected a meal, etc. It's a great way of tracking your big picture numbers in terms of how many guests to expect.
+
+## Models
+
+The original code included two data models - the `Party` and the `Guest`. In addition to modifying these models, I added a third `UploadedGuestList` model to manage my uploaded guest list spreadsheets. This allows me to access past guest lists in the admin. 
 
 #### Party model
 
@@ -68,13 +92,13 @@ The `Guest` model contains all of your individual guests.
 In addition to standard name/email it has fields to represent whether the guest is a child (for kids meals/pricing differences),
 and, after sending invitations, marking whether the guest is attending and what meal they are having.
 
-#### CSV import/export
+#### UploadGuestList model (for .csv imports). 
 
-The guest list can be imported and exported via excel (csv) either in command line or in the dashboard.
+The guest list can be imported and exported via excel (.csv) either in command line or in the dashboard.
 This allows you to build your guest list in Excel and get it into the system in a single step.
 It also lets you export the data to share with others or for whatever else you need.
 
-For the command line option, see the `import_guests` management command for more details and `bigday/guests/tests/data` for sample file formats.
+For the command line option, see the `import_guests` management command for more details and `guests/tests/data` for sample file formats.
 
 ### Save the Dates
 
@@ -94,16 +118,9 @@ The template is similar to the save-the-date template, however in addition to th
 - Unique invitation URLs for each party with pre-populated guest names ([example](http://rownena-and.coryzue.com/invite/b2ad24ec5dbb4694a36ef4ab616264e0/))
 - Online RSVP system with meal selection and validation
 
-### Guest dashboard
+### Purge your guest list
 
-After your invitations go out you can use the guest dashboard to see how many people have RSVP'd, everyone who still
-has to respond, people who haven't selected a meal, etc.
-It's a great way of tracking your big picture numbers in terms of how many guests to expect.
-
-Just access `/dashboard/` from an account with admin access. Your other guests won't be able to see it.
-
-![Wedding Dashboard](https://raw.githubusercontent.com/dannymuchoki/django-wedding-website/master/screenshots/wedding-dashboard.png)
-
+Visiting `/wipeguests` will quickly and instantly wipe your guest list if you need to start all over again. I do recommend downloading it from the Guest List first. 
 
 ### Other details
 
@@ -121,10 +138,9 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-## Create a local .env file!
+## Environment files are your friend
 
-This version heavily relies on a local .env file referenced in settings.py. 
-
+This version heavily relies on a local `.env` file referenced in `settings.py`. [Learn more about environment variables here](https://pypi.org/project/python-dotenv/). Environment variables are also crucial in running this on the cloud, as well as keeping secret things secret (like your secret key).  
 
 ## Customization
 
@@ -133,12 +149,12 @@ Searching for the text on a page in the repository is a great way to find where 
 
 ### Sending email
 
-This application uses Django's email framework for sending mail.
-You need to modify the `EMAIL_HOST`, `EMAIL_PORT` and other associated variables in `settings.py` in order
-to hook it into a real server. MAKE SURE TO STORE THESE SETTINGS IN AN ENVIRONMENT VARIABLE!  
-
 This [thread on stack overflow](https://stackoverflow.com/questions/6367014/how-to-send-email-via-django)
 is a good starting place for learning how to connect to a real mail service. I recommend Sendgrid.
+
+This application uses Django's email framework for sending mail.
+You need to modify the `EMAIL_HOST`, `EMAIL_PORT` and other associated variables in `settings.py` or, ideally, your  in order
+to hook it into a real server. **MAKE SURE TO STORE THESE SETTINGS IN AN ENVIRONMENT VARIABLE!**   
 
 ### Email addresses
 

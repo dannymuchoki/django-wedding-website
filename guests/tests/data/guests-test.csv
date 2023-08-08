@@ -1,6 +1,6 @@
-Party,First Name,Last Name,Type,Is Child?,Category,Invite Now?,Email
-The Starks,Ned,Stark,formal,,starks,y,ned@winterfell.gov
-The Starks,Catelyn,Stark,formal,,starks,y,cat@winterfell.gov
-The Starks,Arya,Stark,formal,y,starks,y,needle@winterfell.gov
-Tyrion,Tyrion,Lannister,fun,n,lannisters,y,
-Jaime,Jaime,Lannister,fun,n,lannisters,n,
+Party,First Name,Last Name,Is Child?,Category,Invite Now?,Email
+The Starks,Ned,Stark,,starks,y,ned@winterfell.gov
+The Starks,Catelyn,Stark,,starks,y,cat@winterfell.gov
+The Starks,Arya,Stark,y,starks,y,needle@winterfell.gov
+Tyrion,Tyrion,Lannister,n,lannisters,y,
+Jaime,Jaime,Lannister,n,lannisters,n,
